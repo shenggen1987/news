@@ -154,7 +154,10 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              
+              plugins: ['transform-runtime', ['import', {
+                  libraryName: 'antd-mobile',
+                  style: 'css'
+              }]],
               compact: true,
             },
           },
@@ -172,6 +175,82 @@ module.exports = {
           // in the main CSS file.
           {
             test: /\.css$/,
+            include:[/node_modules/],
+            loader: ExtractTextPlugin.extract(
+              Object.assign(
+                {
+                  fallback: {
+                    loader: require.resolve('style-loader'),
+                    options: {
+                      hmr: false,
+                      
+                    },
+                  },
+                  use: [
+                    {
+                      loader: require.resolve('css-loader'),
+                      options: {
+                        importLoaders: 1,
+                        minimize: true,
+                        sourceMap: shouldUseSourceMap,
+                      },
+                    },
+                    {
+                      loader: require.resolve('postcss-loader'),
+                      options: {
+                        // Necessary for external CSS imports to work
+                        // https://github.com/facebookincubator/create-react-app/issues/2677
+                        ident: 'postcss',
+                        plugins: () => [
+                          require('postcss-flexbugs-fixes'),
+                          autoprefixer({
+                            browsers: [
+                              '>1%',
+                              'last 4 versions',
+                              'Firefox ESR',
+                              'not ie < 9', // React doesn't support IE8 anyway
+                            ],
+                            flexbox: 'no-2009',
+                          }),
+
+                          postcssAspectRatioMini({}),
+                          
+                          postcssPxToViewport({ 
+                            viewportWidth: 375, // (Number) The width of the viewport. 
+                            viewportHeight: 667, // (Number) The height of the viewport. 
+                            unitPrecision: 3, // (Number) The decimal numbers to allow the REM units to grow to. 
+                            viewportUnit: 'vw', // (String) Expected units. 
+                            selectorBlackList: ['.ignore', '.hairlines'], // (Array) The selectors to ignore and leave as px. 
+                            minPixelValue: 1, // (Number) Set the minimum pixel value to replace. 
+                            mediaQuery: false // (Boolean) Allow px to be converted in media queries. 
+                          }),
+
+                          postcssWriteSvg({
+                            utf8: false
+                          }),
+
+                          postcssCssnext({}),
+
+                          postcssViewportUnits({}),
+
+                          cssnano({
+                            preset: "advanced", 
+                            autoprefixer: false, 
+                            "postcss-zindex": false 
+                          })
+                        ],
+                      },
+                    },
+                  ],
+                },
+                extractTextPluginOptions
+              )
+            ),
+            // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+          },
+          {
+            test: /\.css$/,
+            include:[/src/],
             loader: ExtractTextPlugin.extract(
               Object.assign(
                 {
@@ -214,8 +293,8 @@ module.exports = {
                           postcssAspectRatioMini({}),
                           
                           postcssPxToViewport({ 
-                            viewportWidth: 750, // (Number) The width of the viewport. 
-                            viewportHeight: 1334, // (Number) The height of the viewport. 
+                            viewportWidth: 375, // (Number) The width of the viewport. 
+                            viewportHeight: 667, // (Number) The height of the viewport. 
                             unitPrecision: 3, // (Number) The decimal numbers to allow the REM units to grow to. 
                             viewportUnit: 'vw', // (String) Expected units. 
                             selectorBlackList: ['.ignore', '.hairlines'], // (Array) The selectors to ignore and leave as px. 

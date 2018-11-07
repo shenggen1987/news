@@ -1,8 +1,13 @@
 .App {
-  width: 750px;
-  height: 200px;
+  width: 375px;
+  height: 100px;
   background: #f27a7a;
   color: #ffffff;
-  line-height: 200px;
+  line-height: 100px;
   text-align: center;
+}
+.list img{
+	width: 60px;
+	height: 60px;
+	margin-right: 10px;
 }
