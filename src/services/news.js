@@ -1,5 +1,5 @@
 import request from '../utils/request';
 
 export function fetch() {
-  return request(`http://www.vpgame.com/api/home`);
+  return request(`https://library.mlewear.com/api/home`);
 }
